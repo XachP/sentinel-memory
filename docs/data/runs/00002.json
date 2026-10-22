@@ -1,0 +1,1060 @@
+{
+ "seq": 2,
+ "backend": "walrus-mainnet",
+ "memoryStatus": "recalled state #1 from k91LUqBcfDzHJVqyrge_VqejJpFYlFO6ac5Wt2tIQdw",
+ "memoryNotes": [
+  "standard remember failed for state #2: Internal Error: Embedding API error (401 Unauthorized): {\"error\":{\"message\":\"User not found.\",\"code\":401}}",
+  "standard remember failed for decision #2: Internal Error: Embedding API error (401 Unauthorized): {\"error\":{\"message\":\"User not found.\",\"code\":401}}",
+  "writing 2 item(s) in manual mode (local SEAL encryption + local embedding)"
+ ],
+ "tatum": {
+  "authenticated": true,
+  "calls": [
+   {
+    "method": "sui_getLatestCheckpointSequenceNumber",
+    "ms": 45,
+    "status": 200
+   },
+   {
+    "method": "sui_getCheckpoint",
+    "ms": 13,
+    "status": 200
+   },
+   {
+    "method": "sui_multiGetObjects",
+    "ms": 62,
+    "status": 200
+   }
+  ]
+ },
+ "evidence": {
+  "schema": "sentinel-memory/evidence/v1",
+  "observedAt": 1792660767,
+  "checkpoint": "336794022",
+  "checkpointTs": 1792660766,
+  "lendingMarket": "0x84030d26d85eaa7035084a057f2f11f701b7e2e4eda87551becbc7c97505ece1",
+  "positions": [
+   {
+    "obligationId": "0xc6c853bd9c65504e483d40cc51ae3d7cd6aaf01156b0f3b9b806e2bf8db3f78c",
+    "label": "sSUI/SUI loop",
+    "deposits": [
+     {
+      "coinType": "83556891f4a0f233ce7b05cfe7f957d4020492a34f5405b2cb9377d060bef4bf::spring_sui::SPRING_SUI",
+      "symbol": "SPRING_SUI",
+      "amountRaw": "59756305393713",
+      "decimals": 9,
+      "oraclePriceMicros": 981002,
+      "oraclePriceTs": 1792659814,
+      "weightBps": 7500,
+      "utilizationBps": 0
+     }
+    ],
+    "borrows": [
+     {
+      "coinType": "0000000000000000000000000000000000000000000000000000000000000002::sui::SUI",
+      "symbol": "SUI",
+      "amountRaw": "41120694203610",
+      "decimals": 9,
+      "oraclePriceMicros": 982011,
+      "oraclePriceTs": 1792659506,
+      "weightBps": 10000,
+      "utilizationBps": 5213
+     }
+    ]
+   },
+   {
+    "obligationId": "0x2c423d8306644b3440bad846d4daf49cd63667c57d549a57b71a1a86b6876bbd",
+    "label": "ETH+SUI vs USDC",
+    "deposits": [
+     {
+      "coinType": "0000000000000000000000000000000000000000000000000000000000000002::sui::SUI",
+      "symbol": "SUI",
+      "amountRaw": "3418078833075",
+      "decimals": 9,
+      "oraclePriceMicros": 982011,
+      "oraclePriceTs": 1792659506,
+      "weightBps": 7500,
+      "utilizationBps": 5213
+     },
+     {
+      "coinType": "deeb7a4662eec9f2f3def03fb937a663dddaa2e215b8078a284d026b7946c270::deep::DEEP",
+      "symbol": "DEEP",
+      "amountRaw": "11040467591",
+      "decimals": 6,
+      "oraclePriceMicros": 18331,
+      "oraclePriceTs": 1792659506,
+      "weightBps": 3600,
+      "utilizationBps": 115
+     },
+     {
+      "coinType": "83556891f4a0f233ce7b05cfe7f957d4020492a34f5405b2cb9377d060bef4bf::spring_sui::SPRING_SUI",
+      "symbol": "SPRING_SUI",
+      "amountRaw": "362645887686",
+      "decimals": 9,
+      "oraclePriceMicros": 981002,
+      "oraclePriceTs": 1792659814,
+      "weightBps": 7500,
+      "utilizationBps": 0
+     },
+     {
+      "coinType": "d0e89b2af5e4910726fbcd8b8dd37bb79b29e5f83f7491bca830e94f7f226d29::eth::ETH",
+      "symbol": "ETH",
+      "amountRaw": "224900038",
+      "decimals": 8,
+      "oraclePriceMicros": 2414337790,
+      "oraclePriceTs": 1792657318,
+      "weightBps": 7500,
+      "utilizationBps": 922
+     },
+     {
+      "coinType": "b45fcfcc2cc07ce0702cc2d229621e046c906ef14d9b25e8e4d25f6e8763fef7::send::SEND",
+      "symbol": "SEND",
+      "amountRaw": "388963897",
+      "decimals": 6,
+      "oraclePriceMicros": 999877,
+      "oraclePriceTs": 1792659142,
+      "weightBps": 0,
+      "utilizationBps": 0
+     }
+    ],
+    "borrows": [
+     {
+      "coinType": "dba34672e30cb065b1f93e3ab55318768fd6fef66c15942c9f7cb846e2f900e7::usdc::USDC",
+      "symbol": "USDC",
+      "amountRaw": "4220234922",
+      "decimals": 6,
+      "oraclePriceMicros": 999861,
+      "oraclePriceTs": 1792659506,
+      "weightBps": 10000,
+      "utilizationBps": 8573
+     }
+    ]
+   },
+   {
+    "obligationId": "0x807b72a452741fa3da023a9b9cb23c51d77dc4319c682770d3b10e5e272a6970",
+    "label": "DEEP+SUI+WAL vs USDC",
+    "deposits": [
+     {
+      "coinType": "deeb7a4662eec9f2f3def03fb937a663dddaa2e215b8078a284d026b7946c270::deep::DEEP",
+      "symbol": "DEEP",
+      "amountRaw": "33971843296",
+      "decimals": 6,
+      "oraclePriceMicros": 18331,
+      "oraclePriceTs": 1792659506,
+      "weightBps": 3600,
+      "utilizationBps": 115
+     },
+     {
+      "coinType": "0000000000000000000000000000000000000000000000000000000000000002::sui::SUI",
+      "symbol": "SUI",
+      "amountRaw": "4028046866446",
+      "decimals": 9,
+      "oraclePriceMicros": 982011,
+      "oraclePriceTs": 1792659506,
+      "weightBps": 7500,
+      "utilizationBps": 5213
+     },
+     {
+      "coinType": "356a26eb9e012a68958082340d4c4116e7f55615cf27affcff209cf0ae544f59::wal::WAL",
+      "symbol": "WAL",
+      "amountRaw": "1306746122",
+      "decimals": 9,
+      "oraclePriceMicros": 37870,
+      "oraclePriceTs": 1792658596,
+      "weightBps": 3600,
+      "utilizationBps": 101
+     },
+     {
+      "coinType": "83556891f4a0f233ce7b05cfe7f957d4020492a34f5405b2cb9377d060bef4bf::spring_sui::SPRING_SUI",
+      "symbol": "SPRING_SUI",
+      "amountRaw": "27067203973",
+      "decimals": 9,
+      "oraclePriceMicros": 981002,
+      "oraclePriceTs": 1792659814,
+      "weightBps": 7500,
+      "utilizationBps": 0
+     }
+    ],
+    "borrows": [
+     {
+      "coinType": "dba34672e30cb065b1f93e3ab55318768fd6fef66c15942c9f7cb846e2f900e7::usdc::USDC",
+      "symbol": "USDC",
+      "amountRaw": "2083385039",
+      "decimals": 6,
+      "oraclePriceMicros": 999861,
+      "oraclePriceTs": 1792659506,
+      "weightBps": 10000,
+      "utilizationBps": 8573
+     }
+    ]
+   },
+   {
+    "obligationId": "0x0ee2a2a44598f276ffd3132493478ca7eaabfadcc91cd5494a57abc4d5a1787c",
+    "label": "Mixed vs USDC+SUI",
+    "deposits": [
+     {
+      "coinType": "deeb7a4662eec9f2f3def03fb937a663dddaa2e215b8078a284d026b7946c270::deep::DEEP",
+      "symbol": "DEEP",
+      "amountRaw": "7056190288",
+      "decimals": 6,
+      "oraclePriceMicros": 18331,
+      "oraclePriceTs": 1792659506,
+      "weightBps": 3600,
+      "utilizationBps": 115
+     },
+     {
+      "coinType": "83556891f4a0f233ce7b05cfe7f957d4020492a34f5405b2cb9377d060bef4bf::spring_sui::SPRING_SUI",
+      "symbol": "SPRING_SUI",
+      "amountRaw": "2042337556670",
+      "decimals": 9,
+      "oraclePriceMicros": 981002,
+      "oraclePriceTs": 1792659814,
+      "weightBps": 7500,
+      "utilizationBps": 0
+     },
+     {
+      "coinType": "356a26eb9e012a68958082340d4c4116e7f55615cf27affcff209cf0ae544f59::wal::WAL",
+      "symbol": "WAL",
+      "amountRaw": "1767546715623",
+      "decimals": 9,
+      "oraclePriceMicros": 37870,
+      "oraclePriceTs": 1792658596,
+      "weightBps": 3600,
+      "utilizationBps": 101
+     },
+     {
+      "coinType": "0041f9f9344cac094454cd574e333c4fdb132d7bcc9379bcd4aab485b2a63942::wbtc::WBTC",
+      "symbol": "WBTC",
+      "amountRaw": "282820",
+      "decimals": 8,
+      "oraclePriceMicros": 82732231285,
+      "oraclePriceTs": 1792648102,
+      "weightBps": 6500,
+      "utilizationBps": 1244
+     },
+     {
+      "coinType": "44f838219cf67b058f3b37907b655f226153c18e33dfcd0da559a844fea9b1c1::usdsui::USDSUI",
+      "symbol": "USDSUI",
+      "amountRaw": "396955509",
+      "decimals": 6,
+      "oraclePriceMicros": 999868,
+      "oraclePriceTs": 1792659814,
+      "weightBps": 8000,
+      "utilizationBps": 4161
+     }
+    ],
+    "borrows": [
+     {
+      "coinType": "dba34672e30cb065b1f93e3ab55318768fd6fef66c15942c9f7cb846e2f900e7::usdc::USDC",
+      "symbol": "USDC",
+      "amountRaw": "855504667",
+      "decimals": 6,
+      "oraclePriceMicros": 999861,
+      "oraclePriceTs": 1792659506,
+      "weightBps": 10000,
+      "utilizationBps": 8573
+     },
+     {
+      "coinType": "0000000000000000000000000000000000000000000000000000000000000002::sui::SUI",
+      "symbol": "SUI",
+      "amountRaw": "281314908058",
+      "decimals": 9,
+      "oraclePriceMicros": 982011,
+      "oraclePriceTs": 1792659506,
+      "weightBps": 10000,
+      "utilizationBps": 5213
+     }
+    ]
+   }
+  ],
+  "quotes": [
+   {
+    "source": "suilend_oracle",
+    "kind": "onchain",
+    "ok": true,
+    "priceMicros": 982011,
+    "ts": 1792659506,
+    "detail": "suilend reserve[0].price via Tatum RPC"
+   },
+   {
+    "source": "cetus_usdc_sui",
+    "kind": "onchain",
+    "ok": true,
+    "priceMicros": 980354,
+    "ts": 1792660767,
+    "detail": "cetus pool 0xb8d7d9e6… sqrt_price via Tatum RPC"
+   },
+   {
+    "source": "tatum_rate",
+    "kind": "aggregator",
+    "ok": true,
+    "priceMicros": 980478,
+    "ts": 1792660615,
+    "detail": "tatum data api (CoinGecko)"
+   },
+   {
+    "source": "coinbase",
+    "kind": "cex",
+    "ok": true,
+    "priceMicros": 982900,
+    "ts": 1792660767,
+    "detail": "coinbase spot SUI-USD"
+   },
+   {
+    "source": "kraken",
+    "kind": "cex",
+    "ok": true,
+    "priceMicros": 982000,
+    "ts": 1792660767,
+    "detail": "kraken last trade SUIUSD"
+   },
+   {
+    "source": "okx",
+    "kind": "cex",
+    "ok": true,
+    "priceMicros": 983800,
+    "ts": 1792660767,
+    "detail": "okx last SUI-USDT (USDT ~ USD)"
+   },
+   {
+    "source": "coingecko",
+    "kind": "aggregator",
+    "ok": true,
+    "priceMicros": 980660,
+    "ts": 1792660701,
+    "detail": "coingecko simple price"
+   },
+   {
+    "source": "binance",
+    "kind": "cex",
+    "ok": false,
+    "priceMicros": 0,
+    "ts": 1792660767,
+    "detail": "HTTP 451: { \"code\": 0, \"msg\": \"Service unavailable from a restricted location according to 'b. Eligibility' in https://www.bin"
+   }
+  ]
+ },
+ "priorState": {
+  "lastConsensusAt": 1792660723,
+  "lastConsensusMicros": 981300,
+  "lastRisk": {
+   "0x0ee2a2a44598f276ffd3132493478ca7eaabfadcc91cd5494a57abc4d5a1787c": {
+    "at": 1792660723,
+    "gapBps": 6286,
+    "healthBps": 18046
+   },
+   "0x2c423d8306644b3440bad846d4daf49cd63667c57d549a57b71a1a86b6876bbd": {
+    "at": 1792660723,
+    "gapBps": 3908,
+    "healthBps": 16417
+   },
+   "0x807b72a452741fa3da023a9b9cb23c51d77dc4319c682770d3b10e5e272a6970": {
+    "at": 1792660723,
+    "gapBps": 3507,
+    "healthBps": 15403
+   },
+   "0xc6c853bd9c65504e483d40cc51ae3d7cd6aaf01156b0f3b9b806e2bf8db3f78c": {
+    "at": 1792660723,
+    "gapBps": 10000,
+    "healthBps": 10887
+   }
+  },
+  "marginPoints": 150,
+  "pending": [
+   {
+    "dueAt": 1792682323,
+    "items": [
+     {
+      "action": "HOLD",
+      "args": [
+       "B2_liquidation_far",
+       "B3_oracle_matches_market",
+       "B5_liquidity_ok",
+       "R1_near_liquidation"
+      ],
+      "gapBps": 10000,
+      "healthBps": 10887,
+      "obligationId": "0xc6c853bd9c65504e483d40cc51ae3d7cd6aaf01156b0f3b9b806e2bf8db3f78c"
+     },
+     {
+      "action": "HOLD",
+      "args": [
+       "B1_health_headroom",
+       "B2_liquidation_far",
+       "B3_oracle_matches_market",
+       "B5_liquidity_ok"
+      ],
+      "gapBps": 3908,
+      "healthBps": 16417,
+      "obligationId": "0x2c423d8306644b3440bad846d4daf49cd63667c57d549a57b71a1a86b6876bbd"
+     },
+     {
+      "action": "HOLD",
+      "args": [
+       "B1_health_headroom",
+       "B2_liquidation_far",
+       "B3_oracle_matches_market",
+       "B5_liquidity_ok"
+      ],
+      "gapBps": 3507,
+      "healthBps": 15403,
+      "obligationId": "0x807b72a452741fa3da023a9b9cb23c51d77dc4319c682770d3b10e5e272a6970"
+     },
+     {
+      "action": "HOLD",
+      "args": [
+       "B1_health_headroom",
+       "B2_liquidation_far",
+       "B3_oracle_matches_market",
+       "B5_liquidity_ok"
+      ],
+      "gapBps": 6286,
+      "healthBps": 18046,
+      "obligationId": "0x0ee2a2a44598f276ffd3132493478ca7eaabfadcc91cd5494a57abc4d5a1787c"
+     }
+    ],
+    "madeAt": 1792660723,
+    "priceMicros": 981300,
+    "seq": 1
+   }
+  ],
+  "prevStateHash": "0x4c6f721abf611e8fa4db9ed79803d09fab98a2d78618d3222cf3ec668b36676b",
+  "regret": [],
+  "schema": "sentinel-memory/state/v1",
+  "seq": 1,
+  "sources": {
+   "binance": {
+    "a": 19200,
+    "b": 19600,
+    "last": "error",
+    "lastDevBps": 0,
+    "muted": false,
+    "n": 1,
+    "trustBps": 4948
+   },
+   "cetus_usdc_sui": {
+    "a": 29200,
+    "b": 9600,
+    "last": "agree",
+    "lastDevBps": 19,
+    "muted": false,
+    "n": 1,
+    "trustBps": 7525
+   },
+   "coinbase": {
+    "a": 29200,
+    "b": 9600,
+    "last": "agree",
+    "lastDevBps": 4,
+    "muted": false,
+    "n": 1,
+    "trustBps": 7525
+   },
+   "coingecko": {
+    "a": 29200,
+    "b": 9600,
+    "last": "agree",
+    "lastDevBps": 7,
+    "muted": false,
+    "n": 1,
+    "trustBps": 7525
+   },
+   "kraken": {
+    "a": 29200,
+    "b": 9600,
+    "last": "agree",
+    "lastDevBps": 0,
+    "muted": false,
+    "n": 1,
+    "trustBps": 7525
+   },
+   "okx": {
+    "a": 29200,
+    "b": 9600,
+    "last": "agree",
+    "lastDevBps": 12,
+    "muted": false,
+    "n": 1,
+    "trustBps": 7525
+   },
+   "suilend_oracle": {
+    "a": 29200,
+    "b": 9600,
+    "last": "agree",
+    "lastDevBps": 7,
+    "muted": false,
+    "n": 1,
+    "trustBps": 7525
+   },
+   "tatum_rate": {
+    "a": 29200,
+    "b": 9600,
+    "last": "agree",
+    "lastDevBps": 8,
+    "muted": false,
+    "n": 1,
+    "trustBps": 7525
+   }
+  },
+  "updatedAt": 1792660723,
+  "voices": {}
+ },
+ "record": {
+  "schema": "sentinel-memory/decision/v1",
+  "seq": 2,
+  "observedAt": 1792660767,
+  "checkpoint": "336794022",
+  "evidenceHash": "0x3d735d0d63c44892054ed1d7d4d860b8964cdd82f1cc62977e043f45ef082d36",
+  "policyHash": "0x5c2694885f442223c4f11347464b18555eed84bc9bb9c98cf8cf0123805fed1f",
+  "priorStateHash": "0x9b9fcc62af915d66102eaafe726da543c29c51de3f17c867409c2b87a432cfd9",
+  "nextStateHash": "0x81620283bd09d2594d88ae0c8a363ff016907306023a6926a8bf72b533bcd08b",
+  "recalled": [
+   {
+    "blobId": "k91LUqBcfDzHJVqyrge_VqejJpFYlFO6ac5Wt2tIQdw",
+    "kind": "state",
+    "seq": 1
+   }
+  ],
+  "consensus": {
+   "priceMicros": 982000,
+   "used": [
+    "suilend_oracle",
+    "cetus_usdc_sui",
+    "tatum_rate",
+    "coinbase",
+    "kraken",
+    "okx",
+    "coingecko"
+   ],
+   "excluded": [
+    {
+     "source": "binance",
+     "reason": "error: HTTP 451: { \"code\": 0, \"msg\": \"Service unavailable from a restricted location ac"
+    }
+   ]
+  },
+  "coldConsensus": {
+   "priceMicros": 982000,
+   "used": [
+    "suilend_oracle",
+    "cetus_usdc_sui",
+    "tatum_rate",
+    "coinbase",
+    "kraken",
+    "okx",
+    "coingecko"
+   ],
+   "excluded": [
+    {
+     "source": "binance",
+     "reason": "error: HTTP 451: { \"code\": 0, \"msg\": \"Service unavailable from a restricted location ac"
+    }
+   ]
+  },
+  "decisions": [
+   {
+    "obligationId": "0xc6c853bd9c65504e483d40cc51ae3d7cd6aaf01156b0f3b9b806e2bf8db3f78c",
+    "label": "sSUI/SUI loop",
+    "action": "HOLD",
+    "bull": 250,
+    "bear": 300,
+    "margin": 150,
+    "healthBps": 10887,
+    "gapBps": 10000,
+    "args": [
+     {
+      "id": "B2_liquidation_far",
+      "points": 150,
+      "multiplierBps": 10000
+     },
+     {
+      "id": "B3_oracle_matches_market",
+      "points": 50,
+      "multiplierBps": 10000
+     },
+     {
+      "id": "B5_liquidity_ok",
+      "points": 50,
+      "multiplierBps": 10000
+     },
+     {
+      "id": "R1_near_liquidation",
+      "points": 300,
+      "multiplierBps": 10000
+     }
+    ]
+   },
+   {
+    "obligationId": "0x2c423d8306644b3440bad846d4daf49cd63667c57d549a57b71a1a86b6876bbd",
+    "label": "ETH+SUI vs USDC",
+    "action": "HOLD",
+    "bull": 550,
+    "bear": 0,
+    "margin": 150,
+    "healthBps": 16421,
+    "gapBps": 3910,
+    "args": [
+     {
+      "id": "B1_health_headroom",
+      "points": 300,
+      "multiplierBps": 10000
+     },
+     {
+      "id": "B2_liquidation_far",
+      "points": 150,
+      "multiplierBps": 10000
+     },
+     {
+      "id": "B3_oracle_matches_market",
+      "points": 50,
+      "multiplierBps": 10000
+     },
+     {
+      "id": "B5_liquidity_ok",
+      "points": 50,
+      "multiplierBps": 10000
+     }
+    ]
+   },
+   {
+    "obligationId": "0x807b72a452741fa3da023a9b9cb23c51d77dc4319c682770d3b10e5e272a6970",
+    "label": "DEEP+SUI+WAL vs USDC",
+    "action": "HOLD",
+    "bull": 550,
+    "bear": 0,
+    "margin": 150,
+    "healthBps": 15413,
+    "gapBps": 3512,
+    "args": [
+     {
+      "id": "B1_health_headroom",
+      "points": 300,
+      "multiplierBps": 10000
+     },
+     {
+      "id": "B2_liquidation_far",
+      "points": 150,
+      "multiplierBps": 10000
+     },
+     {
+      "id": "B3_oracle_matches_market",
+      "points": 50,
+      "multiplierBps": 10000
+     },
+     {
+      "id": "B5_liquidity_ok",
+      "points": 50,
+      "multiplierBps": 10000
+     }
+    ]
+   },
+   {
+    "obligationId": "0x0ee2a2a44598f276ffd3132493478ca7eaabfadcc91cd5494a57abc4d5a1787c",
+    "label": "Mixed vs USDC+SUI",
+    "action": "HOLD",
+    "bull": 550,
+    "bear": 0,
+    "margin": 150,
+    "healthBps": 18052,
+    "gapBps": 6288,
+    "args": [
+     {
+      "id": "B1_health_headroom",
+      "points": 300,
+      "multiplierBps": 10000
+     },
+     {
+      "id": "B2_liquidation_far",
+      "points": 150,
+      "multiplierBps": 10000
+     },
+     {
+      "id": "B3_oracle_matches_market",
+      "points": 50,
+      "multiplierBps": 10000
+     },
+     {
+      "id": "B5_liquidity_ok",
+      "points": 50,
+      "multiplierBps": 10000
+     }
+    ]
+   }
+  ],
+  "coldDecisions": [
+   {
+    "obligationId": "0xc6c853bd9c65504e483d40cc51ae3d7cd6aaf01156b0f3b9b806e2bf8db3f78c",
+    "label": "sSUI/SUI loop",
+    "action": "HOLD",
+    "bull": 250,
+    "bear": 300,
+    "margin": 150,
+    "healthBps": 10887,
+    "gapBps": 10000,
+    "args": [
+     {
+      "id": "B2_liquidation_far",
+      "points": 150,
+      "multiplierBps": 10000
+     },
+     {
+      "id": "B3_oracle_matches_market",
+      "points": 50,
+      "multiplierBps": 10000
+     },
+     {
+      "id": "B5_liquidity_ok",
+      "points": 50,
+      "multiplierBps": 10000
+     },
+     {
+      "id": "R1_near_liquidation",
+      "points": 300,
+      "multiplierBps": 10000
+     }
+    ]
+   },
+   {
+    "obligationId": "0x2c423d8306644b3440bad846d4daf49cd63667c57d549a57b71a1a86b6876bbd",
+    "label": "ETH+SUI vs USDC",
+    "action": "HOLD",
+    "bull": 550,
+    "bear": 0,
+    "margin": 150,
+    "healthBps": 16421,
+    "gapBps": 3910,
+    "args": [
+     {
+      "id": "B1_health_headroom",
+      "points": 300,
+      "multiplierBps": 10000
+     },
+     {
+      "id": "B2_liquidation_far",
+      "points": 150,
+      "multiplierBps": 10000
+     },
+     {
+      "id": "B3_oracle_matches_market",
+      "points": 50,
+      "multiplierBps": 10000
+     },
+     {
+      "id": "B5_liquidity_ok",
+      "points": 50,
+      "multiplierBps": 10000
+     }
+    ]
+   },
+   {
+    "obligationId": "0x807b72a452741fa3da023a9b9cb23c51d77dc4319c682770d3b10e5e272a6970",
+    "label": "DEEP+SUI+WAL vs USDC",
+    "action": "HOLD",
+    "bull": 550,
+    "bear": 0,
+    "margin": 150,
+    "healthBps": 15413,
+    "gapBps": 3512,
+    "args": [
+     {
+      "id": "B1_health_headroom",
+      "points": 300,
+      "multiplierBps": 10000
+     },
+     {
+      "id": "B2_liquidation_far",
+      "points": 150,
+      "multiplierBps": 10000
+     },
+     {
+      "id": "B3_oracle_matches_market",
+      "points": 50,
+      "multiplierBps": 10000
+     },
+     {
+      "id": "B5_liquidity_ok",
+      "points": 50,
+      "multiplierBps": 10000
+     }
+    ]
+   },
+   {
+    "obligationId": "0x0ee2a2a44598f276ffd3132493478ca7eaabfadcc91cd5494a57abc4d5a1787c",
+    "label": "Mixed vs USDC+SUI",
+    "action": "HOLD",
+    "bull": 550,
+    "bear": 0,
+    "margin": 150,
+    "healthBps": 18052,
+    "gapBps": 6288,
+    "args": [
+     {
+      "id": "B1_health_headroom",
+      "points": 300,
+      "multiplierBps": 10000
+     },
+     {
+      "id": "B2_liquidation_far",
+      "points": 150,
+      "multiplierBps": 10000
+     },
+     {
+      "id": "B3_oracle_matches_market",
+      "points": 50,
+      "multiplierBps": 10000
+     },
+     {
+      "id": "B5_liquidity_ok",
+      "points": 50,
+      "multiplierBps": 10000
+     }
+    ]
+   }
+  ],
+  "effects": [
+   {
+    "kind": "momentum",
+    "detail": "momentum 7 bps vs remembered price 981300"
+   }
+  ],
+  "resolutions": [],
+  "alertResolutions": [],
+  "reasoningHash": "0xd483107d7c0bae8252a7c4692e370ace26a9ff04c001458f50a29343fa128b14"
+ },
+ "nextState": {
+  "schema": "sentinel-memory/state/v1",
+  "seq": 2,
+  "updatedAt": 1792660767,
+  "prevStateHash": "0x9b9fcc62af915d66102eaafe726da543c29c51de3f17c867409c2b87a432cfd9",
+  "sources": {
+   "binance": {
+    "a": 18432,
+    "b": 28816,
+    "n": 2,
+    "trustBps": 3901,
+    "muted": false,
+    "last": "error",
+    "lastDevBps": 0
+   },
+   "cetus_usdc_sui": {
+    "a": 38032,
+    "b": 9216,
+    "n": 2,
+    "trustBps": 8049,
+    "muted": false,
+    "last": "agree",
+    "lastDevBps": 17
+   },
+   "coinbase": {
+    "a": 38032,
+    "b": 9216,
+    "n": 2,
+    "trustBps": 8049,
+    "muted": false,
+    "last": "agree",
+    "lastDevBps": 9
+   },
+   "coingecko": {
+    "a": 38032,
+    "b": 9216,
+    "n": 2,
+    "trustBps": 8049,
+    "muted": false,
+    "last": "agree",
+    "lastDevBps": 14
+   },
+   "kraken": {
+    "a": 38032,
+    "b": 9216,
+    "n": 2,
+    "trustBps": 8049,
+    "muted": false,
+    "last": "agree",
+    "lastDevBps": 0
+   },
+   "okx": {
+    "a": 38032,
+    "b": 9216,
+    "n": 2,
+    "trustBps": 8049,
+    "muted": false,
+    "last": "agree",
+    "lastDevBps": 18
+   },
+   "suilend_oracle": {
+    "a": 38032,
+    "b": 9216,
+    "n": 2,
+    "trustBps": 8049,
+    "muted": false,
+    "last": "agree",
+    "lastDevBps": 0
+   },
+   "tatum_rate": {
+    "a": 38032,
+    "b": 9216,
+    "n": 2,
+    "trustBps": 8049,
+    "muted": false,
+    "last": "agree",
+    "lastDevBps": 15
+   }
+  },
+  "voices": {},
+  "pending": [
+   {
+    "dueAt": 1792682323,
+    "items": [
+     {
+      "action": "HOLD",
+      "args": [
+       "B2_liquidation_far",
+       "B3_oracle_matches_market",
+       "B5_liquidity_ok",
+       "R1_near_liquidation"
+      ],
+      "gapBps": 10000,
+      "healthBps": 10887,
+      "obligationId": "0xc6c853bd9c65504e483d40cc51ae3d7cd6aaf01156b0f3b9b806e2bf8db3f78c"
+     },
+     {
+      "action": "HOLD",
+      "args": [
+       "B1_health_headroom",
+       "B2_liquidation_far",
+       "B3_oracle_matches_market",
+       "B5_liquidity_ok"
+      ],
+      "gapBps": 3908,
+      "healthBps": 16417,
+      "obligationId": "0x2c423d8306644b3440bad846d4daf49cd63667c57d549a57b71a1a86b6876bbd"
+     },
+     {
+      "action": "HOLD",
+      "args": [
+       "B1_health_headroom",
+       "B2_liquidation_far",
+       "B3_oracle_matches_market",
+       "B5_liquidity_ok"
+      ],
+      "gapBps": 3507,
+      "healthBps": 15403,
+      "obligationId": "0x807b72a452741fa3da023a9b9cb23c51d77dc4319c682770d3b10e5e272a6970"
+     },
+     {
+      "action": "HOLD",
+      "args": [
+       "B1_health_headroom",
+       "B2_liquidation_far",
+       "B3_oracle_matches_market",
+       "B5_liquidity_ok"
+      ],
+      "gapBps": 6286,
+      "healthBps": 18046,
+      "obligationId": "0x0ee2a2a44598f276ffd3132493478ca7eaabfadcc91cd5494a57abc4d5a1787c"
+     }
+    ],
+    "madeAt": 1792660723,
+    "priceMicros": 981300,
+    "seq": 1
+   },
+   {
+    "seq": 2,
+    "madeAt": 1792660767,
+    "dueAt": 1792682367,
+    "priceMicros": 982000,
+    "items": [
+     {
+      "obligationId": "0xc6c853bd9c65504e483d40cc51ae3d7cd6aaf01156b0f3b9b806e2bf8db3f78c",
+      "gapBps": 10000,
+      "healthBps": 10887,
+      "action": "HOLD",
+      "args": [
+       "B2_liquidation_far",
+       "B3_oracle_matches_market",
+       "B5_liquidity_ok",
+       "R1_near_liquidation"
+      ]
+     },
+     {
+      "obligationId": "0x2c423d8306644b3440bad846d4daf49cd63667c57d549a57b71a1a86b6876bbd",
+      "gapBps": 3910,
+      "healthBps": 16421,
+      "action": "HOLD",
+      "args": [
+       "B1_health_headroom",
+       "B2_liquidation_far",
+       "B3_oracle_matches_market",
+       "B5_liquidity_ok"
+      ]
+     },
+     {
+      "obligationId": "0x807b72a452741fa3da023a9b9cb23c51d77dc4319c682770d3b10e5e272a6970",
+      "gapBps": 3512,
+      "healthBps": 15413,
+      "action": "HOLD",
+      "args": [
+       "B1_health_headroom",
+       "B2_liquidation_far",
+       "B3_oracle_matches_market",
+       "B5_liquidity_ok"
+      ]
+     },
+     {
+      "obligationId": "0x0ee2a2a44598f276ffd3132493478ca7eaabfadcc91cd5494a57abc4d5a1787c",
+      "gapBps": 6288,
+      "healthBps": 18052,
+      "action": "HOLD",
+      "args": [
+       "B1_health_headroom",
+       "B2_liquidation_far",
+       "B3_oracle_matches_market",
+       "B5_liquidity_ok"
+      ]
+     }
+    ]
+   }
+  ],
+  "regret": [],
+  "marginPoints": 150,
+  "lastConsensusMicros": 982000,
+  "lastConsensusAt": 1792660767,
+  "lastRisk": {
+   "0xc6c853bd9c65504e483d40cc51ae3d7cd6aaf01156b0f3b9b806e2bf8db3f78c": {
+    "gapBps": 10000,
+    "healthBps": 10887,
+    "at": 1792660767
+   },
+   "0x2c423d8306644b3440bad846d4daf49cd63667c57d549a57b71a1a86b6876bbd": {
+    "gapBps": 3910,
+    "healthBps": 16421,
+    "at": 1792660767
+   },
+   "0x807b72a452741fa3da023a9b9cb23c51d77dc4319c682770d3b10e5e272a6970": {
+    "gapBps": 3512,
+    "healthBps": 15413,
+    "at": 1792660767
+   },
+   "0x0ee2a2a44598f276ffd3132493478ca7eaabfadcc91cd5494a57abc4d5a1787c": {
+    "gapBps": 6288,
+    "healthBps": 18052,
+    "at": 1792660767
+   }
+  }
+ },
+ "written": [
+  {
+   "blobId": "MD8WSb-C_Z_Wcqt6b3sFsXrI1gwDIbS0SA6BYPaZcOM",
+   "namespace": "sentinel-memory.state",
+   "kind": "state",
+   "seq": 2
+  },
+  {
+   "blobId": "rw1PnKyOPFmXsR2OB5pltAkLpbZmzkQakuxRjpTyHvQ",
+   "namespace": "sentinel-memory.decisions",
+   "kind": "decision",
+   "seq": 2
+  }
+ ],
+ "policyHash": "0x5c2694885f442223c4f11347464b18555eed84bc9bb9c98cf8cf0123805fed1f"
+}

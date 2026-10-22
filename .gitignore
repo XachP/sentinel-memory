@@ -1,0 +1,14 @@
+node_modules/
+.env
+.env.*
+!.env.example
+*.key
+wallet/
+.memory-local/
+
+# internal notes, never published
+COMPETITION.md
+research/
+docs/preview/
+SUBMISSION.md
+*.env

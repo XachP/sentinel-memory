@@ -1,0 +1,30 @@
+{
+  "name": "sentinel-memory",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "A deterministic guardian agent for a live Suilend loan on Sui mainnet that learns which feeds, arguments and alarms to trust, using Walrus Memory and Tatum.",
+  "license": "MIT",
+  "scripts": {
+    "test": "bun test",
+    "typecheck": "tsc --noEmit",
+    "run:once": "bun src/cli.ts run",
+    "run:local": "bun src/cli.ts run --memory local",
+    "replay": "bun src/cli.ts replay",
+    "ab": "bun src/cli.ts ab",
+    "smoke": "bun scripts/smoke-memwal.ts",
+    "keys": "bun scripts/gen-keys.ts",
+    "build:web": "bun build src/core/browser.ts --target browser --minify --outfile docs/sentinel-core.js"
+  },
+  "dependencies": {
+    "@mysten-incubation/memwal": "0.1.9",
+    "@mysten/sui": "^2.5.0",
+    "@mysten/seal": "^1.1.0",
+    "@mysten/walrus": "^1.0.3",
+    "viem": "2.34.0"
+  },
+  "devDependencies": {
+    "@types/bun": "1.3.0",
+    "typescript": "5.9.3"
+  }
+}

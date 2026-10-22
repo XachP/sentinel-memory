@@ -1,0 +1,9 @@
+{
+  "note": "Public Suilend main-pool obligations on Sui mainnet that Sentinel Memory watches. Anyone can read them, and we do not own or control them. Set WATCH_OBLIGATIONS=0xid:label,0xid:label to guard your own loan instead.",
+  "obligations": [
+    { "obligationId": "0xc6c853bd9c65504e483d40cc51ae3d7cd6aaf01156b0f3b9b806e2bf8db3f78c", "label": "sSUI/SUI loop" },
+    { "obligationId": "0x2c423d8306644b3440bad846d4daf49cd63667c57d549a57b71a1a86b6876bbd", "label": "ETH+SUI vs USDC" },
+    { "obligationId": "0x807b72a452741fa3da023a9b9cb23c51d77dc4319c682770d3b10e5e272a6970", "label": "DEEP+SUI+WAL vs USDC" },
+    { "obligationId": "0x0ee2a2a44598f276ffd3132493478ca7eaabfadcc91cd5494a57abc4d5a1787c", "label": "Mixed vs USDC+SUI" }
+  ]
+}

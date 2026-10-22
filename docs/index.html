@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sentinel Memory: a loan guardian that remembers</title>
+<meta name="description" content="A deterministic guardian for live Suilend loans on Sui mainnet. It learns which price feeds, arguments and alarms to trust, using Walrus Memory and Tatum.">
+<style>
+:root{--bg:#0d1117;--card:#161b22;--line:#30363d;--fg:#e6edf3;--mut:#8b949e;--ok:#3fb950;--warn:#d29922;--bad:#f85149;--acc:#58a6ff;--sea:#6ee7d8}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{padding:28px 20px 8px;max-width:1180px;margin:auto}h1{margin:0;font-size:28px}h1 span{color:var(--sea)}
+.sub{color:var(--mut);max-width:820px}main{max-width:1180px;margin:auto;padding:0 20px 60px}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(340px,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin-top:16px}
+.card h2{margin:0 0 10px;font-size:16px;letter-spacing:.2px}.card h2 small{color:var(--mut);font-weight:400}
+table{width:100%;border-collapse:collapse;font-size:13.5px}td,th{padding:6px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{color:var(--mut);font-weight:500}
+.pill{display:inline-block;padding:1px 8px;border-radius:999px;font-size:12px;font-weight:600}
+.HOLD{background:#1f6feb33;color:#79c0ff}.WATCH{background:#d2992233;color:#e3b341}.ESCALATE{background:#f8514933;color:#ff7b72}.ABSTAIN{background:#8b949e33;color:#c9d1d9}
+.muted{color:var(--mut)}.ok{color:var(--ok)}.bad{color:var(--bad)}.warn{color:var(--warn)}code,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px}
+a{color:var(--acc)}.kpi{display:flex;gap:22px;flex-wrap:wrap}.kpi div{min-width:120px}.kpi b{display:block;font-size:22px}
+.bar{height:8px;background:#30363d;border-radius:4px;overflow:hidden}.bar i{display:block;height:100%;background:var(--sea)}
+button{background:#238636;color:#fff;border:0;border-radius:6px;padding:7px 12px;font-weight:600;cursor:pointer}button.sec{background:#30363d}
+.diff{border-left:3px solid var(--warn);padding-left:10px;margin:6px 0}.note{font-size:12.5px;color:var(--mut)}
+svg text{fill:var(--mut);font-size:11px}
+</style>
+</head>
+<body>
+<header>
+ <h1>Sentinel <span>Memory</span></h1>
+ <p class="sub">A deterministic guardian for live <b>Suilend</b> loans on <b>Sui mainnet</b>. Every run it reads the chain through <b>Tatum</b>,
+ recalls what it learned from <b>Walrus Memory</b>, and decides HOLD / WATCH / ESCALATE / ABSTAIN. It remembers which price feeds lied, which of its own arguments were right,
+ and which alarms were false, so tomorrow's decision differs from today's for reasons you can audit. There is no LLM in the decision path, and every decision replays bit for bit.</p>
+ <p class="note" id="status">Loading…</p>
+</header>
+<main>
+ <section class="card"><h2>Today: with memory vs. empty memory <small>(same evidence, decided twice)</small></h2><div id="ab"></div></section>
+ <div class="grid">
+  <section class="card"><h2>Loop 1: feed trust <small>(who agrees with the crowd, and on time)</small></h2><div id="feeds"></div><div id="feedChart"></div></section>
+  <section class="card"><h2>Loop 2: argument credibility <small>(each argument is a forecast, checked 6h later)</small></h2><div id="voices"></div></section>
+ </div>
+ <div class="grid">
+  <section class="card"><h2>Loop 3: regret <small>(false alarms raise the alert margin; misses lower it twice as hard)</small></h2><div id="margin"></div></section>
+  <section class="card"><h2>Measured A/B over every saved run</h2><div id="score"></div></section>
+ </div>
+ <section class="card"><h2>Latest decision trail <small>(bull vs bear, multipliers from memory, hard rules first)</small></h2><div id="trail"></div></section>
+ <section class="card"><h2>Verify it yourself</h2>
+  <p class="note">These checks run in your browser: Tatum's Sui mainnet gateway (anonymous plan, 5 requests/min), and the same decision core the agent runs (<code>sentinel-core.js</code>).</p>
+  <button id="live">Read Sui mainnet via Tatum now</button> <button class="sec" id="replay">Re-derive the latest decision in my browser</button>
+  <pre id="verify" class="mono" style="white-space:pre-wrap"></pre>
+ </section>
+ <section class="card"><h2>Run history</h2><div id="hist"></div></section>
+ <p class="note">Watched obligations are public Suilend main-pool loans, read-only. We do not own or control them. Nothing here is financial advice. Memories are Seal-encrypted on Walrus. The blob links show their on-chain storage records, and the plaintext of every decision is published in <code>docs/data/runs/</code>, so you can check the hashes.</p>
+</main>
+<script type="module">
+const q = new URLSearchParams(location.search)
+const DATA = q.get('data') || './data'
+const $ = (id) => document.getElementById(id)
+const pct = (bps) => (bps / 100).toFixed(1) + '%'
+const x = (bps) => (bps / 10000).toFixed(3) + 'x'
+const usd = (m) => '$' + (m / 1e6).toFixed(4)
+const t = (s) => new Date(s * 1000).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })
+const pill = (a) => `<span class="pill ${a}">${a}</span>`
+const blob = (id) => id?.startsWith('local:') ? `<code>${id}</code> <span class="warn">(local dry run, not Walrus)</span>` : `<a class="mono" href="https://walruscan.com/mainnet/blob/${id}" target="_blank" rel="noopener">${id?.slice(0, 14)}…</a>`
+async function j(p) { const r = await fetch(`${DATA}/${p}`, { cache: 'no-store' }); if (!r.ok) throw new Error(p + ' ' + r.status); return r.json() }
+
+function line(series, { h = 150, max = 10000, min = 0, fmt = pct } = {}) {
+  const W = 520, pad = 28, n = Math.max(...series.map((s) => s.pts.length), 2)
+  const X = (i) => pad + (i * (W - pad - 8)) / (n - 1), Y = (v) => h - 18 - ((v - min) * (h - 30)) / (max - min || 1)
+  const colors = ['#6ee7d8', '#58a6ff', '#e3b341', '#ff7b72', '#a5d6ff', '#d2a8ff', '#7ee787', '#ffa657']
+  let s = `<svg viewBox="0 0 ${W} ${h}" width="100%"><line x1="${pad}" x2="${W}" y1="${Y(min)}" y2="${Y(min)}" stroke="#30363d"/>`
+  s += `<text x="0" y="${Y(max) + 4}">${fmt(max)}</text><text x="0" y="${Y(min)}">${fmt(min)}</text>`
+  series.forEach((sr, k) => {
+    const d = sr.pts.map((v, i) => (v == null ? '' : `${i && sr.pts[i - 1] != null ? 'L' : 'M'}${X(i).toFixed(1)},${Y(v).toFixed(1)}`)).join('')
+    s += `<path d="${d}" fill="none" stroke="${colors[k % 8]}" stroke-width="2"/><text x="${pad + 4 + (k % 4) * 125}" y="${12 + Math.floor(k / 4) * 13}" style="fill:${colors[k % 8]}">${sr.name}</text>`
+  })
+  return s + '</svg>'
+}
+
+async function main() {
+  let idx, latest, sc
+  try { idx = await j('index.json'); latest = await j('latest.json') } catch (e) { $('status').innerHTML = 'No mainnet runs published yet. The first scheduled run will appear here.'; return }
+  try { sc = await j('scorecard.json') } catch {}
+  const runs = idx.runs, r = latest.record
+  if (/SYNTHETIC/.test(latest.memoryStatus)) document.querySelector('header').insertAdjacentHTML('beforeend', '<p class="bad"><b>SYNTHETIC PREVIEW DATA</b>: layout test only, not mainnet.</p>')
+  $('status').innerHTML = `Run <b>#${latest.seq}</b> at ${t(latest.evidence.observedAt)} · Sui checkpoint <code>${latest.evidence.checkpoint}</code> · memory: <b>${latest.backend}</b>, ${latest.memoryStatus} · ${runs.length} runs since ${t(runs[0].observedAt)} · policy <code>${idx.policyHash.slice(0, 12)}…</code>`
+
+  // A/B
+  let ab = `<table><tr><th>Loan (public obligation)</th><th>Cover</th><th>Drop to liq.</th><th>With memory</th><th>Empty memory</th></tr>`
+  r.decisions.forEach((d, i) => { const c = r.coldDecisions[i]; ab += `<tr><td>${d.label}<br><a class="mono" target="_blank" rel="noopener" href="https://suiscan.xyz/mainnet/object/${d.obligationId}">${d.obligationId.slice(0, 10)}…</a></td><td>${x(d.healthBps)}</td><td>${pct(d.gapBps)}</td><td>${pill(d.action)}<br><span class="note">bull ${d.bull} · bear ${d.bear} · margin ${d.margin}</span></td><td>${pill(c.action)}<br><span class="note">bull ${c.bull} · bear ${c.bear} · margin ${c.margin}</span></td></tr>` })
+  ab += `</table><p><b>Consensus SUI</b> ${usd(r.consensus.priceMicros)} from ${r.consensus.used.join(', ')} <span class="muted">(empty memory: ${usd(r.coldConsensus.priceMicros)} from ${r.coldConsensus.used.length} feeds)</span></p>`
+  ab += r.effects.length ? `<div><b>What memory changed in this run:</b>${r.effects.map((e) => `<div class="diff">${e.kind.replace('_', ' ')}: ${e.detail}</div>`).join('')}</div>` : `<p class="muted">Memory changed nothing in this run.</p>`
+  ab += `<p class="note">Conditioned on: ${r.recalled.length ? r.recalled.map((m) => `${m.kind} #${m.seq} ${blob(m.blobId)}`).join(', ') : 'nothing (cold start)'} · wrote ${latest.written.map((w) => `${w.kind} ${blob(w.blobId)}`).join(', ') || 'nothing'}</p>`
+  $('ab').innerHTML = ab
+
+  // feeds
+  const src = latest.nextState.sources
+  $('feeds').innerHTML = `<table><tr><th>Feed</th><th>Trust</th><th>Runs</th><th>Last</th><th></th></tr>` + Object.entries(src).sort((a, b) => b[1].trustBps - a[1].trustBps).map(([k, v]) => `<tr><td>${k}</td><td style="min-width:120px"><div class="bar"><i style="width:${v.trustBps / 100}%;background:${v.muted ? 'var(--bad)' : 'var(--sea)'}"></i></div>${pct(v.trustBps)}</td><td>${v.n}</td><td class="${v.last === 'agree' ? 'ok' : 'bad'}">${v.last}${v.lastDevBps ? ` (${v.lastDevBps} bps)` : ''}</td><td>${v.muted ? '<b class="bad">MUTED</b>' : ''}</td></tr>`).join('') + '</table>'
+  const names = Object.keys(src)
+  $('feedChart').innerHTML = line(names.map((n) => ({ name: n, pts: runs.map((ru) => ru.trust[n]?.trustBps ?? null) })), { min: 0, max: 10000 })
+
+  // voices
+  const v = latest.nextState.voices
+  $('voices').innerHTML = Object.keys(v).length ? `<table><tr><th>Argument</th><th>Side</th><th>Hit rate (decayed)</th><th>Checked</th><th>Weight now</th></tr>` + Object.entries(v).sort((a, b) => a[0].localeCompare(b[0])).map(([k, c]) => `<tr><td><code>${k}</code></td><td>${c.side}</td><td>${pct(c.credBps)}</td><td>${c.n}</td><td class="${c.multiplierBps < 10000 ? 'bad' : c.multiplierBps > 10000 ? 'ok' : ''}">×${(c.multiplierBps / 10000).toFixed(2)}</td></tr>`).join('') + '</table>' : '<p class="muted">No forecast has matured yet (the horizon is 6 hours).</p>'
+
+  // margin
+  $('margin').innerHTML = line([{ name: 'alert margin (points)', pts: runs.map((ru) => ru.margin) }], { min: idx.policy.memory.marginMinPoints, max: idx.policy.memory.marginMaxPoints, fmt: (n) => String(n) }) + `<p class="note">Remembered alert outcomes: ${latest.nextState.regret.join(', ') || 'none yet'}. Bounds ${idx.policy.memory.marginMinPoints} to ${idx.policy.memory.marginMaxPoints}; base ${idx.policy.judge.watchMarginPoints}.</p>`
+
+  // scorecard
+  if (sc) { const s = sc.summary, row = (k, f) => `<tr><td>${k}</td><td>${f(s.withMemory)}</td><td>${f(s.emptyMemory)}</td></tr>`
+    $('score').innerHTML = `<div class="kpi"><div><b>${s.runs}</b>runs replayed</div><div><b>${s.decisionsWhereMemoryChangedScores}</b>decisions re-weighted</div><div><b>${s.decisionsWhereMemoryChangedAction}</b>actions changed</div><div><b>${s.runsWhereMemoryChangedConsensus}</b>consensus changed</div></div>
+    <table><tr><th></th><th>With memory</th><th>Empty memory</th></tr>${row('alerts raised', (z) => z.alerts)}${row('justified (risk rose ≥100 bps in 6h)', (z) => z.justified)}${row('false alarms', (z) => z.falseAlarms)}${row('missed (HOLD, then risk rose ≥300 bps)', (z) => z.missed)}${row('abstained', (z) => z.abstain)}${row('not yet scorable', (z) => z.unscored)}</table><p class="note">Scored in hindsight against the trust-blind median of all fresh feeds, so neither regime grades itself. Muted feeds at the end: ${s.mutedFeeds.join(', ') || 'none'}.</p>` }
+  else $('score').innerHTML = '<p class="muted">The scorecard appears after the first scheduled run.</p>'
+
+  // trail
+  const d0 = latest.record.decisions
+  const full = latest.decisionsFull
+  $('trail').innerHTML = d0.map((d) => `<p>${pill(d.action)} <b>${d.label}</b>: ${d.args.map((a) => `<code>${a.id}</code> ${a.points}${a.multiplierBps !== 10000 ? ` <span class="${a.multiplierBps < 10000 ? 'bad' : 'ok'}">(×${(a.multiplierBps / 10000).toFixed(2)})</span>` : ''}`).join(' · ')}</p>`).join('') +
+    `<p class="note mono">evidenceHash ${r.evidenceHash}<br>policyHash ${r.policyHash}<br>priorStateHash ${r.priorStateHash}<br>nextStateHash ${r.nextStateHash}<br>reasoningHash ${r.reasoningHash}</p>`
+
+  // history
+  $('hist').innerHTML = `<table><tr><th>#</th><th>Time</th><th>SUI</th><th>Feeds used</th><th>Decisions (memory / empty)</th><th>Effects</th><th>Checked</th></tr>` + runs.slice().reverse().slice(0, 60).map((ru) => `<tr><td><a href="${DATA}/runs/${String(ru.seq).padStart(5, '0')}.json">${ru.seq}</a></td><td>${t(ru.observedAt)}</td><td>${usd(ru.consensus)}</td><td>${ru.used.length}${ru.excluded.length ? ` <span class="muted">(−${ru.excluded.join(', ')})</span>` : ''}</td><td>${ru.decisions.map((d, i) => `${pill(d.action)}${ru.cold[i].action !== d.action ? ` / ${pill(ru.cold[i].action)}` : ''}`).join(' ')}</td><td>${ru.effects}</td><td>${ru.resolutions}</td></tr>`).join('') + '</table>'
+
+  // verify
+  $('live').onclick = async () => {
+    const out = $('verify'); out.textContent = 'asking sui-mainnet.gateway.tatum.io …'
+    const rpc = async (method, params) => { const t0 = performance.now(); const res = await fetch('https://sui-mainnet.gateway.tatum.io', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }) }); const js = await res.json(); return { ms: Math.round(performance.now() - t0), js } }
+    try {
+      const a = await rpc('sui_getLatestCheckpointSequenceNumber', [])
+      const b = await rpc('sui_getObject', [d0[0].obligationId, { showContent: true }])
+      const f = b.js.result?.data?.content?.fields
+      out.textContent = `Tatum Sui mainnet: checkpoint ${a.js.result} (${a.ms} ms)\nobligation ${d0[0].obligationId.slice(0, 12)}… version ${b.js.result?.data?.version} (${b.ms} ms)\n  deposits: ${f?.deposits?.length} legs, borrows: ${f?.borrows?.length} legs\n  Suilend-stored weighted borrow $${(Number(BigInt(f.weighted_borrowed_value_usd.fields.value) / 10n ** 12n) / 1e6).toFixed(2)}, unhealthy limit $${(Number(BigInt(f.unhealthy_borrow_value_usd.fields.value) / 10n ** 12n) / 1e6).toFixed(2)} (as of its last refresh)`
+    } catch (e) { out.textContent = 'Tatum call failed: ' + e.message + ' (the anonymous plan allows 5 requests/min)' }
+  }
+  $('replay').onclick = async () => {
+    const out = $('verify'); out.textContent = 'loading sentinel-core.js …'
+    const core = await import('./sentinel-core.js')
+    const res = core.runStep(latest.priorState, latest.evidence, latest.record.recalled, core.POLICY_V1)
+    const ok = res.record.reasoningHash === r.reasoningHash && core.stateHash(res.next) === r.nextStateHash
+    out.textContent = `${ok ? 'MATCH' : 'MISMATCH'}: re-derived run #${latest.seq} in your browser\n reasoningHash ${res.record.reasoningHash}\n nextStateHash ${core.stateHash(res.next)}\n policyHash ${core.policyHash()}`
+  }
+}
+main()
+</script>
+</body>
+</html>

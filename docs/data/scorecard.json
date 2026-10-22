@@ -1,0 +1,96 @@
+{
+ "summary": {
+  "runs": 3,
+  "firstAt": 1792660723,
+  "lastAt": 1792661316,
+  "runsWhereMemoryChangedConsensus": 0,
+  "decisionsWhereMemoryChangedScores": 0,
+  "decisionsWhereMemoryChangedAction": 0,
+  "withMemory": {
+   "decisions": 12,
+   "alerts": 0,
+   "justified": 0,
+   "falseAlarms": 0,
+   "holds": 12,
+   "missed": 0,
+   "unscored": 12,
+   "abstain": 0,
+   "falseAlarmRateBps": 0,
+   "missRateBps": 0
+  },
+  "emptyMemory": {
+   "decisions": 12,
+   "alerts": 0,
+   "justified": 0,
+   "falseAlarms": 0,
+   "holds": 12,
+   "missed": 0,
+   "unscored": 12,
+   "abstain": 0,
+   "falseAlarmRateBps": 0,
+   "missRateBps": 0
+  },
+  "mutedFeeds": [],
+  "argumentCredibility": {},
+  "finalMarginPoints": 150
+ },
+ "rows": [
+  {
+   "seq": 1,
+   "observedAt": 1792660723,
+   "withMemory": [
+    "HOLD",
+    "HOLD",
+    "HOLD",
+    "HOLD"
+   ],
+   "emptyMemory": [
+    "HOLD",
+    "HOLD",
+    "HOLD",
+    "HOLD"
+   ],
+   "consensusWith": 981300,
+   "consensusEmpty": 981300,
+   "effects": 0
+  },
+  {
+   "seq": 2,
+   "observedAt": 1792660767,
+   "withMemory": [
+    "HOLD",
+    "HOLD",
+    "HOLD",
+    "HOLD"
+   ],
+   "emptyMemory": [
+    "HOLD",
+    "HOLD",
+    "HOLD",
+    "HOLD"
+   ],
+   "consensusWith": 982000,
+   "consensusEmpty": 982000,
+   "effects": 1
+  },
+  {
+   "seq": 3,
+   "observedAt": 1792661316,
+   "withMemory": [
+    "HOLD",
+    "HOLD",
+    "HOLD",
+    "HOLD"
+   ],
+   "emptyMemory": [
+    "HOLD",
+    "HOLD",
+    "HOLD",
+    "HOLD"
+   ],
+   "consensusWith": 980850,
+   "consensusEmpty": 980850,
+   "effects": 1
+  }
+ ]
+}

@@ -312,6 +312,133 @@
    "voices": {},
    "margin": 150,
    "reasoningHash": "0xd483107d7c0bae8252a7c4692e370ace26a9ff04c001458f50a29343fa128b14"
+  },
+  {
+   "seq": 3,
+   "observedAt": 1792661316,
+   "checkpoint": "336796326",
+   "backend": "walrus-mainnet",
+   "consensus": 980850,
+   "used": [
+    "suilend_oracle",
+    "cetus_usdc_sui",
+    "tatum_rate",
+    "coinbase",
+    "kraken",
+    "okx",
+    "coingecko"
+   ],
+   "excluded": [
+    "binance"
+   ],
+   "decisions": [
+    {
+     "label": "sSUI/SUI loop",
+     "action": "HOLD",
+     "bull": 250,
+     "bear": 300,
+     "margin": 150,
+     "healthBps": 10901,
+     "gapBps": 10000
+    },
+    {
+     "label": "ETH+SUI vs USDC",
+     "action": "HOLD",
+     "bull": 550,
+     "bear": 0,
+     "margin": 150,
+     "healthBps": 16413,
+     "gapBps": 3907
+    },
+    {
+     "label": "DEEP+SUI+WAL vs USDC",
+     "action": "HOLD",
+     "bull": 550,
+     "bear": 0,
+     "margin": 150,
+     "healthBps": 15392,
+     "gapBps": 3503
+    },
+    {
+     "label": "Mixed vs USDC+SUI",
+     "action": "HOLD",
+     "bull": 550,
+     "bear": 0,
+     "margin": 150,
+     "healthBps": 18057,
+     "gapBps": 6288
+    }
+   ],
+   "cold": [
+    {
+     "action": "HOLD",
+     "bull": 250,
+     "bear": 300
+    },
+    {
+     "action": "HOLD",
+     "bull": 550,
+     "bear": 0
+    },
+    {
+     "action": "HOLD",
+     "bull": 550,
+     "bear": 0
+    },
+    {
+     "action": "HOLD",
+     "bull": 550,
+     "bear": 0
+    }
+   ],
+   "effects": 1,
+   "resolutions": 0,
+   "written": 2,
+   "trust": {
+    "binance": {
+     "trustBps": 3196,
+     "muted": false,
+     "last": "error"
+    },
+    "cetus_usdc_sui": {
+     "trustBps": 8401,
+     "muted": false,
+     "last": "agree"
+    },
+    "coinbase": {
+     "trustBps": 8401,
+     "muted": false,
+     "last": "agree"
+    },
+    "coingecko": {
+     "trustBps": 8401,
+     "muted": false,
+     "last": "agree"
+    },
+    "kraken": {
+     "trustBps": 8401,
+     "muted": false,
+     "last": "agree"
+    },
+    "okx": {
+     "trustBps": 8401,
+     "muted": false,
+     "last": "agree"
+    },
+    "suilend_oracle": {
+     "trustBps": 8401,
+     "muted": false,
+     "last": "agree"
+    },
+    "tatum_rate": {
+     "trustBps": 8401,
+     "muted": false,
+     "last": "agree"
+    }
+   },
+   "voices": {},
+   "margin": 150,
+   "reasoningHash": "0xa406f461538236072acf7c659b376ba0d984fbf8b2d1841c0acf97557ad572c6"
   }
  ]
 }

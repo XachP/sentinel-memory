@@ -1,0 +1,317 @@
+{
+ "policy": {
+  "id": "sentinel-memory/policy/v1",
+  "description": "Duty-of-care policy for watching Suilend obligations on Sui mainnet. Hard data gates and an escalation line come first. After that, bull and bear arguments are weighed against a margin. Memory can adjust feed selection, argument weights and the margin, but only within the bounds below.",
+  "dataQuality": {
+   "agreeBps": 50,
+   "maxQuoteAgeSec": 600,
+   "maxOracleAgeSec": 3600,
+   "minTrustedSources": 3,
+   "maxOracleVsConsensusBps": 300,
+   "maxSnapshotLagSec": 900
+  },
+  "assets": {
+   "suiLinked": [
+    "0000000000000000000000000000000000000000000000000000000000000002::sui::SUI",
+    "83556891f4a0f233ce7b05cfe7f957d4020492a34f5405b2cb9377d060bef4bf::spring_sui::SPRING_SUI"
+   ],
+   "stable": [
+    "dba34672e30cb065b1f93e3ab55318768fd6fef66c15942c9f7cb846e2f900e7::usdc::USDC",
+    "375f70cf2ae4c00bf37117d0c85a2c71545e6ee05c4a5c7d282cd66a4504b068::usdt::USDT",
+    "2053d08c1e2bd02791056171aab0fd12bd7cd7efad2ab8f6b9c8902f14df2ff2::ausd::AUSD",
+    "41d587e5336f1c86cad50d38a7136db99333bb9bda91cea4ba69115defeb1402::sui_usde::SUI_USDE",
+    "44f838219cf67b058f3b37907b655f226153c18e33dfcd0da559a844fea9b1c1::usdsui::USDSUI",
+    "ce7ff77a83ea0cb6fd39bd8748e2ec89a3f41e8efdc3f4eb123e0ca37b184db2::buck::BUCK",
+    "5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93bf::coin::COIN",
+    "c060006111016b8a020ad5b33834984a437aaa7d3c74c18e09a95d48aceab08c::coin::COIN"
+   ]
+  },
+  "risk": {
+   "healthWatchBps": 13000,
+   "escalateHealthBps": 10800,
+   "gapWatchBps": 2500,
+   "utilizationWatchBps": 9000,
+   "momentumBps": 100
+  },
+  "judge": {
+   "watchMarginPoints": 150
+  },
+  "memory": {
+   "priorHits": 20000,
+   "priorMisses": 10000,
+   "decayBps": 9600,
+   "muteBelowBps": 5000,
+   "unmuteAboveBps": 6500,
+   "minObservations": 4,
+   "horizonSec": 21600,
+   "forecastMoveBps": 100,
+   "priceFlatBps": 25,
+   "minResolutions": 3,
+   "multiplierFloorBps": 5000,
+   "multiplierCeilBps": 15000,
+   "maxPendingRuns": 24,
+   "regretWindow": 24,
+   "missMoveBps": 300,
+   "regretStepPoints": 10,
+   "marginMinPoints": 80,
+   "marginMaxPoints": 300
+  }
+ },
+ "policyHash": "0x5c2694885f442223c4f11347464b18555eed84bc9bb9c98cf8cf0123805fed1f",
+ "runs": [
+  {
+   "seq": 1,
+   "observedAt": 1792660723,
+   "checkpoint": "336793840",
+   "backend": "walrus-mainnet",
+   "consensus": 981300,
+   "used": [
+    "suilend_oracle",
+    "cetus_usdc_sui",
+    "tatum_rate",
+    "coinbase",
+    "kraken",
+    "okx",
+    "coingecko"
+   ],
+   "excluded": [
+    "binance"
+   ],
+   "decisions": [
+    {
+     "label": "sSUI/SUI loop",
+     "action": "HOLD",
+     "bull": 250,
+     "bear": 300,
+     "margin": 150,
+     "healthBps": 10887,
+     "gapBps": 10000
+    },
+    {
+     "label": "ETH+SUI vs USDC",
+     "action": "HOLD",
+     "bull": 550,
+     "bear": 0,
+     "margin": 150,
+     "healthBps": 16417,
+     "gapBps": 3908
+    },
+    {
+     "label": "DEEP+SUI+WAL vs USDC",
+     "action": "HOLD",
+     "bull": 550,
+     "bear": 0,
+     "margin": 150,
+     "healthBps": 15403,
+     "gapBps": 3507
+    },
+    {
+     "label": "Mixed vs USDC+SUI",
+     "action": "HOLD",
+     "bull": 550,
+     "bear": 0,
+     "margin": 150,
+     "healthBps": 18046,
+     "gapBps": 6286
+    }
+   ],
+   "cold": [
+    {
+     "action": "HOLD",
+     "bull": 250,
+     "bear": 300
+    },
+    {
+     "action": "HOLD",
+     "bull": 550,
+     "bear": 0
+    },
+    {
+     "action": "HOLD",
+     "bull": 550,
+     "bear": 0
+    },
+    {
+     "action": "HOLD",
+     "bull": 550,
+     "bear": 0
+    }
+   ],
+   "effects": 0,
+   "resolutions": 0,
+   "written": 2,
+   "trust": {
+    "suilend_oracle": {
+     "trustBps": 7525,
+     "muted": false,
+     "last": "agree"
+    },
+    "cetus_usdc_sui": {
+     "trustBps": 7525,
+     "muted": false,
+     "last": "agree"
+    },
+    "tatum_rate": {
+     "trustBps": 7525,
+     "muted": false,
+     "last": "agree"
+    },
+    "coinbase": {
+     "trustBps": 7525,
+     "muted": false,
+     "last": "agree"
+    },
+    "kraken": {
+     "trustBps": 7525,
+     "muted": false,
+     "last": "agree"
+    },
+    "okx": {
+     "trustBps": 7525,
+     "muted": false,
+     "last": "agree"
+    },
+    "coingecko": {
+     "trustBps": 7525,
+     "muted": false,
+     "last": "agree"
+    },
+    "binance": {
+     "trustBps": 4948,
+     "muted": false,
+     "last": "error"
+    }
+   },
+   "voices": {},
+   "margin": 150,
+   "reasoningHash": "0xe67cccfd687258ba63cb449bf7fb8bf79bfc0174c70190be7350922af6b8000b"
+  },
+  {
+   "seq": 2,
+   "observedAt": 1792660767,
+   "checkpoint": "336794022",
+   "backend": "walrus-mainnet",
+   "consensus": 982000,
+   "used": [
+    "suilend_oracle",
+    "cetus_usdc_sui",
+    "tatum_rate",
+    "coinbase",
+    "kraken",
+    "okx",
+    "coingecko"
+   ],
+   "excluded": [
+    "binance"
+   ],
+   "decisions": [
+    {
+     "label": "sSUI/SUI loop",
+     "action": "HOLD",
+     "bull": 250,
+     "bear": 300,
+     "margin": 150,
+     "healthBps": 10887,
+     "gapBps": 10000
+    },
+    {
+     "label": "ETH+SUI vs USDC",
+     "action": "HOLD",
+     "bull": 550,
+     "bear": 0,
+     "margin": 150,
+     "healthBps": 16421,
+     "gapBps": 3910
+    },
+    {
+     "label": "DEEP+SUI+WAL vs USDC",
+     "action": "HOLD",
+     "bull": 550,
+     "bear": 0,
+     "margin": 150,
+     "healthBps": 15413,
+     "gapBps": 3512
+    },
+    {
+     "label": "Mixed vs USDC+SUI",
+     "action": "HOLD",
+     "bull": 550,
+     "bear": 0,
+     "margin": 150,
+     "healthBps": 18052,
+     "gapBps": 6288
+    }
+   ],
+   "cold": [
+    {
+     "action": "HOLD",
+     "bull": 250,
+     "bear": 300
+    },
+    {
+     "action": "HOLD",
+     "bull": 550,
+     "bear": 0
+    },
+    {
+     "action": "HOLD",
+     "bull": 550,
+     "bear": 0
+    },
+    {
+     "action": "HOLD",
+     "bull": 550,
+     "bear": 0
+    }
+   ],
+   "effects": 1,
+   "resolutions": 0,
+   "written": 2,
+   "trust": {
+    "binance": {
+     "trustBps": 3901,
+     "muted": false,
+     "last": "error"
+    },
+    "cetus_usdc_sui": {
+     "trustBps": 8049,
+     "muted": false,
+     "last": "agree"
+    },
+    "coinbase": {
+     "trustBps": 8049,
+     "muted": false,
+     "last": "agree"
+    },
+    "coingecko": {
+     "trustBps": 8049,
+     "muted": false,
+     "last": "agree"
+    },
+    "kraken": {
+     "trustBps": 8049,
+     "muted": false,
+     "last": "agree"
+    },
+    "okx": {
+     "trustBps": 8049,
+     "muted": false,
+     "last": "agree"
+    },
+    "suilend_oracle": {
+     "trustBps": 8049,
+     "muted": false,
+     "last": "agree"
+    },
+    "tatum_rate": {
+     "trustBps": 8049,
+     "muted": false,
+     "last": "agree"
+    }
+   },
+   "voices": {},
+   "margin": 150,
+   "reasoningHash": "0xd483107d7c0bae8252a7c4692e370ace26a9ff04c001458f50a29343fa128b14"
+  }
+ ]
+}

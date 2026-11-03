@@ -19,12 +19,12 @@ There is no LLM in the decision path. Every decision is replayable bit for bit, 
 
 ## How it uses Tatum
 
-All chain reads go through **Tatum's Sui RPC gateway**. One `sui_multiGetObjects` call returns:
+All chain reads go through **Tatum's Sui GraphQL gateway** (`https://sui-mainnet.gateway.tatum.io/graphql`). One query returns the latest checkpoint plus:
 - the Suilend main lending market (all 45 reserves: prices, cToken supply, cumulative borrow rates, LTVs);
 - every watched obligation;
 - a Cetus USDC/SUI pool.
 
-From those it re-derives each loan the way Suilend's liquidation check does. My test fixtures are real Tatum responses, and the re-derived debt matches Suilend's stored value to within 0.5%. The Cetus pool's `sqrt_price` gives an on-chain DEX price, and the Suilend reserve gives the protocol's own oracle price. Tatum's Data API adds an aggregator price. A whole run is three Tatum requests.
+From those it re-derives each loan the way Suilend's liquidation check does. My test fixtures are real Tatum responses, and the re-derived debt matches Suilend's stored value to within 0.5%. The Cetus pool's `sqrt_price` gives an on-chain DEX price, and the Suilend reserve gives the protocol's own oracle price. Tatum's Data API adds an aggregator price. A whole run is one Tatum GraphQL request.
 
 ## How it uses Walrus Memory
 

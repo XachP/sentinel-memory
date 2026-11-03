@@ -1,4 +1,4 @@
-// SUI/USD price feeds. Two are on-chain and read through Tatum Sui RPC: Suilend's reserve oracle (Pyth-fed) and a
+// SUI/USD price feeds. Two are on-chain and read through Tatum Sui GraphQL: Suilend's reserve oracle (Pyth-fed) and a
 // Cetus USDC/SUI pool. One is Tatum's Data API, which needs TATUM_API_KEY. The rest are public exchange or
 // aggregator tickers. Every feed answers with a Quote, including when it fails: a failure is evidence about the feed.
 import type { Quote } from '../core/evidence'
@@ -14,7 +14,7 @@ const micros = (x: number) => Math.round(x * 1e6)
 export function suilendOracleQuote(reserves: Reserve[], now: number): Quote {
 	const r = reserves.find((x) => x.coinType === SUI_TYPE)
 	if (!r) return fail('suilend_oracle', 'onchain', now, 'SUI reserve not found')
-	return { source: 'suilend_oracle', kind: 'onchain', ok: true, priceMicros: r.priceMicros, ts: r.priceTs, detail: `suilend reserve[${r.index}].price via Tatum RPC` }
+	return { source: 'suilend_oracle', kind: 'onchain', ok: true, priceMicros: r.priceMicros, ts: r.priceTs, detail: `suilend reserve[${r.index}].price via Tatum GraphQL` }
 }
 
 /** Cetus CLMM: price(B per A) = (sqrt_price / 2^64)^2 * 10^(decA - decB); pool is <USDC, SUI>, so SUI/USD = 1 / that. */
@@ -25,7 +25,7 @@ export function cetusQuote(poolFields: any | undefined, now: number): Quote {
 		// SUI per USDC (raw) = sqrt^2 / 2^128 ; SUI/USD = 2^128 / sqrt^2 * 10^(9-6) in human units
 		const priceMicros = Number(((1n << 128n) * 10n ** 3n * 1_000_000n) / (sqrt * sqrt))
 		if (poolFields.is_pause) throw new Error('pool paused')
-		return { source: 'cetus_usdc_sui', kind: 'onchain', ok: true, priceMicros, ts: now, detail: `cetus pool ${CETUS_USDC_SUI_POOL.slice(0, 10)}… sqrt_price via Tatum RPC` }
+		return { source: 'cetus_usdc_sui', kind: 'onchain', ok: true, priceMicros, ts: now, detail: `cetus pool ${CETUS_USDC_SUI_POOL.slice(0, 10)}… sqrt_price via Tatum GraphQL` }
 	} catch (e) {
 		return fail('cetus_usdc_sui', 'onchain', now, e)
 	}

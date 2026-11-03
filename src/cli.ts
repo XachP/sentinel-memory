@@ -54,6 +54,8 @@ async function cmdRun() {
 		memoryStatus = `memory unreachable (${(e as Error).message}); deciding cold and NOT writing`
 		if (mem.backend === 'walrus-mainnet') process.exitCode = 2
 	}
+	// Print before the chain read. A later throw (Tatum, for example) must not hide whether recall worked.
+	console.log(`[sentinel-memory] ${memoryStatus}`)
 	const memoryOk = !memoryStatus.startsWith('memory unreachable')
 	// watchdog mode (box fallback): do nothing if another runner already ran recently
 	const fresh = Number(flag('skip-if-fresh', '0'))
@@ -76,7 +78,6 @@ async function cmdRun() {
 	const file = join(RUNS, `${String(res.next.seq).padStart(5, '0')}.json`)
 	writeFileSync(file, JSON.stringify(run, null, 1))
 	writeIndex()
-	console.log(`[sentinel-memory] ${memoryStatus}`)
 	console.log(`[sentinel-memory] checkpoint ${evidence.checkpoint}; consensus SUI $${(res.record.consensus.priceMicros / 1e6).toFixed(4)} from ${res.record.consensus.used.join(', ')}; excluded: ${res.record.consensus.excluded.map((x) => x.source + ' (' + x.reason + ')').join('; ') || 'none'}`)
 	for (const [i, d] of res.decisions.entries()) console.log(`  ${d.label.padEnd(24)} ${d.actionName.padEnd(8)} cover ${(d.metrics.healthBps / 10000).toFixed(3)}x  drop-to-liq ${(d.metrics.gapBps / 100).toFixed(1)}%  bull ${d.bull.score} bear ${d.bear.score} margin ${d.marginPoints}  | empty memory: ${res.coldDecisions[i].actionName} (bull ${res.coldDecisions[i].bull.score} bear ${res.coldDecisions[i].bear.score})`)
 	console.log(`  memory effects: ${res.record.effects.length ? res.record.effects.map((e) => e.detail).join(' | ') : 'none'}`)

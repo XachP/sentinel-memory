@@ -7,14 +7,14 @@ Built for **Total Recall** (Tatum × Walrus Foundation, Oct 20 – Nov 10, 2026)
 - **Dashboard:** `https://<user>.github.io/sentinel-memory/` (GitHub Pages from `docs/`)
 - **Live data:** `docs/data/runs/*.json`. Each run holds the full evidence, the recalled memory, the decision and the new memory, with hashes.
 - **Memory:** Walrus Memory on mainnet (`relayer.memory.walrus.xyz`), namespaces `sentinel-memory.state`, `.decisions`, `.lessons`. Agent (delegate) public key / `MEMWAL_AGENT_ID`: `1e80216547306fd1ef57d64746dcca95718c198e5e78490a966db2a8e2932677`
-- **Chain data:** Tatum Sui RPC (`sui-mainnet.gateway.tatum.io`) for the Suilend market, the watched obligations, the Cetus pool and checkpoints
+- **Chain data:** Tatum Sui GraphQL (`https://sui-mainnet.gateway.tatum.io/graphql`) for the Suilend market, the watched obligations, the Cetus pool and checkpoints
 
 ## What it does
 
 Every hour (GitHub Actions cron, with a stand-by runner that only acts if no run happened in the last 75 minutes) the agent runs one cycle:
 
 1. **Recall.** It loads the newest intact *state snapshot* from Walrus Memory. The hash is checked, and a tampered or truncated recall is rejected.
-2. **Read the chain through Tatum.** Three requests: checkpoint, checkpoint time, and one `sui_multiGetObjects` covering the Suilend main market, every watched obligation and a Cetus USDC/SUI pool. From these it re-derives each loan exactly as Suilend's liquidation check does: cToken exchange rates, cumulative borrow rates, close-LTV and borrow weights.
+2. **Read the chain through Tatum.** One GraphQL request returns the latest checkpoint together with the Suilend main market, every watched obligation and a Cetus USDC/SUI pool. From these it re-derives each loan exactly as Suilend's liquidation check does: cToken exchange rates, cumulative borrow rates, close-LTV and borrow weights.
 3. **Price SUI from the feeds memory still trusts.** There are 8 feeds: the Suilend oracle and Cetus on-chain (via Tatum), the Tatum Data API, Coinbase, Kraken, OKX, CoinGecko and Binance.
 4. **Argue and judge.** A bull agent and a bear agent argue from the same evidence. The judge, a fixed and ordered rule list reused from Lifeline Sentinel, our earlier duty-of-care agent, picks the first matching rule:
    - data gates, which produce **ABSTAIN**;
@@ -53,7 +53,7 @@ Every hour (GitHub Actions cron, with a stand-by runner that only acts if no run
 
 ```bash
 bun install
-bun test                          # 32 tests: position math on real mainnet fixtures, the 3 loops, A/B, replay
+bun test                          # position math on real mainnet fixtures, the 3 loops, A/B, replay
 bun src/cli.ts run --memory local # one real cycle against Sui mainnet via Tatum, memory in a local file
 bun src/cli.ts run                # the real thing: Walrus Memory mainnet (needs MEMWAL_* env)
 bun src/cli.ts replay docs/data/runs/00012.json   # re-derive a past decision bit for bit
@@ -81,10 +81,10 @@ Environment: see `.env.example`.
 
 ```
 src/core      pure, deterministic: policy, evidence, position math, agents, judge, learning loops, step, scorecard
-src/sources   Tatum Sui RPC client, Suilend parser, Cetus + off-chain feeds, evidence collector
+src/sources   Tatum Sui GraphQL client, Suilend parser, Cetus + off-chain feeds, evidence collector
 src/memory    Walrus Memory store (MemWal SDK), local store, memory record format
 docs/         GitHub Pages dashboard + published run data
-test/         bun tests (fixtures are real mainnet RPC responses fetched through Tatum on Oct 22, 2026)
+test/         bun tests (fixtures are real mainnet responses fetched through Tatum: JSON-RPC on Oct 22, 2026, GraphQL on Nov 3, 2026)
 ```
 
 MIT licensed.

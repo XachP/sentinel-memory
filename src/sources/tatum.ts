@@ -1,9 +1,37 @@
-// Tatum Sui RPC client. Every on-chain read in Sentinel Memory goes through Tatum's Sui mainnet gateway.
+// Tatum Sui client. Every on-chain read in Sentinel Memory goes through Tatum's Sui mainnet gateway.
+// JSON-RPC on this host was removed (it now returns HTTP 404). The gateway serves GraphQL at /graphql.
 // With TATUM_API_KEY set it uses the authenticated plan. Without a key the anonymous plan allows 5 requests/min,
-// so a whole run is kept to 3 requests (checkpoint, checkpoint time, one multiGetObjects).
-export const TATUM_SUI_MAINNET = 'https://sui-mainnet.gateway.tatum.io'
+// so a whole run is one GraphQL request: the latest checkpoint plus every object the run needs.
+export const TATUM_SUI_MAINNET = 'https://sui-mainnet.gateway.tatum.io/graphql'
+
+const READ_QUERY = `query SentinelRead($ids: [ObjectKey!]!) {
+  checkpoint { sequenceNumber timestamp digest }
+  multiGetObjects(keys: $ids) {
+    address
+    version
+    asMoveObject { contents { type { repr } json } }
+  }
+}`
 
 export type RpcLog = { method: string; ms: number; status: number }
+
+export type Checkpoint = { sequenceNumber: string; timestampMs: string; digest: string }
+
+export type ChainObject = {
+	data?: { objectId: string; version: string; content?: { type: string; fields: any } }
+	error?: unknown
+}
+
+type GqlObject = {
+	address: string
+	version: number | string
+	asMoveObject: { contents: { type: { repr: string }; json: unknown } } | null
+} | null
+
+type ReadData = {
+	checkpoint: { sequenceNumber: number | string; timestamp: string; digest: string } | null
+	multiGetObjects: GqlObject[]
+}
 
 export class TatumSui {
 	readonly log: RpcLog[] = []
@@ -15,24 +43,38 @@ export class TatumSui {
 
 	get authenticated() { return this.apiKey.length > 0 }
 
-	async call<T>(method: string, params: unknown[], attempt = 0): Promise<T> {
+	async graphql<T>(query: string, variables: Record<string, unknown>, attempt = 0): Promise<T> {
 		const t0 = Date.now()
 		const headers: Record<string, string> = { 'content-type': 'application/json' }
 		if (this.apiKey) headers['x-api-key'] = this.apiKey
-		const res = await this.fetchFn(this.url, { method: 'POST', headers, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }) })
-		this.log.push({ method, ms: Date.now() - t0, status: res.status })
+		const res = await this.fetchFn(this.url, { method: 'POST', headers, body: JSON.stringify({ query, variables }) })
+		this.log.push({ method: 'graphql', ms: Date.now() - t0, status: res.status })
 		if (res.status === 429 && attempt < 2) {
 			const wait = Math.min(65, Number(res.headers.get('retry-after') ?? '20')) * 1000
 			await new Promise((r) => setTimeout(r, wait))
-			return this.call(method, params, attempt + 1)
+			return this.graphql(query, variables, attempt + 1)
 		}
-		if (!res.ok) throw new Error(`tatum ${method}: HTTP ${res.status} ${(await res.text()).slice(0, 200)}`)
-		const j = (await res.json()) as { result?: T; error?: { message: string } }
-		if (j.error) throw new Error(`tatum ${method}: ${j.error.message}`)
-		return j.result as T
+		const text = await res.text()
+		if (!res.ok) throw new Error(`tatum graphql: HTTP ${res.status} ${text.slice(0, 200)}`)
+		const j = JSON.parse(text) as { data?: T; errors?: { message: string }[] }
+		if (j.errors?.length) throw new Error(`tatum graphql: ${j.errors.map((e) => e.message).join('; ')}`)
+		if (j.data == null) throw new Error('tatum graphql: empty data')
+		return j.data
 	}
 
-	latestCheckpoint() { return this.call<string>('sui_getLatestCheckpointSequenceNumber', []) }
-	checkpoint(seq: string) { return this.call<{ sequenceNumber: string; timestampMs: string; digest: string }>('sui_getCheckpoint', [seq]) }
-	multiGetObjects(ids: string[]) { return this.call<{ data?: { objectId: string; version: string; content?: { type: string; fields: any } }; error?: unknown }[]>('sui_multiGetObjects', [ids, { showContent: true }]) }
+	/** Latest checkpoint and the given objects, in one request. `content.fields` is GraphQL's flat Move json. */
+	async read(ids: string[]): Promise<{ checkpoint: Checkpoint; objects: ChainObject[] }> {
+		const data = await this.graphql<ReadData>(READ_QUERY, { ids: ids.map((address) => ({ address })) })
+		const cp = data.checkpoint
+		if (!cp) throw new Error('tatum graphql: checkpoint missing')
+		const timestampMs = Date.parse(cp.timestamp)
+		if (!Number.isFinite(timestampMs)) throw new Error(`tatum graphql: bad checkpoint timestamp ${cp.timestamp}`)
+		const objects = (data.multiGetObjects ?? []).map((o, i): ChainObject => {
+			const contents = o?.asMoveObject?.contents
+			if (!o || !contents) return { error: { objectId: ids[i], message: 'object not returned' } }
+			const json = typeof contents.json === 'string' ? JSON.parse(contents.json) : contents.json
+			return { data: { objectId: o.address, version: String(o.version), content: { type: contents.type.repr, fields: json } } }
+		})
+		return { checkpoint: { sequenceNumber: String(cp.sequenceNumber), timestampMs: String(timestampMs), digest: cp.digest }, objects }
+	}
 }

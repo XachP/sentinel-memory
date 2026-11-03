@@ -44,7 +44,7 @@ svg text{fill:var(--mut);font-size:11px}
  </div>
  <section class="card"><h2>Latest decision trail <small>(bull vs bear, multipliers from memory, hard rules first)</small></h2><div id="trail"></div></section>
  <section class="card"><h2>Verify it yourself</h2>
-  <p class="note">These checks run in your browser: Tatum's Sui mainnet gateway (anonymous plan, 5 requests/min), and the same decision core the agent runs (<code>sentinel-core.js</code>).</p>
+  <p class="note">These checks run in your browser: Tatum's Sui GraphQL gateway (anonymous plan, 5 requests/min), and the same decision core the agent runs (<code>sentinel-core.js</code>).</p>
   <button id="live">Read Sui mainnet via Tatum now</button> <button class="sec" id="replay">Re-derive the latest decision in my browser</button>
   <pre id="verify" class="mono" style="white-space:pre-wrap"></pre>
  </section>
@@ -122,13 +122,17 @@ async function main() {
 
   // verify
   $('live').onclick = async () => {
-    const out = $('verify'); out.textContent = 'asking sui-mainnet.gateway.tatum.io …'
-    const rpc = async (method, params) => { const t0 = performance.now(); const res = await fetch('https://sui-mainnet.gateway.tatum.io', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }) }); const js = await res.json(); return { ms: Math.round(performance.now() - t0), js } }
+    const out = $('verify'); out.textContent = 'asking sui-mainnet.gateway.tatum.io/graphql …'
+    const dec = (x) => { const v = x?.fields?.value ?? x?.value ?? x ?? '0'; return (typeof v === 'string' || typeof v === 'number') ? v : '0' }
+    const usdOf = (x) => (Number(BigInt(dec(x)) / 10n ** 12n) / 1e6).toFixed(2)
     try {
-      const a = await rpc('sui_getLatestCheckpointSequenceNumber', [])
-      const b = await rpc('sui_getObject', [d0[0].obligationId, { showContent: true }])
-      const f = b.js.result?.data?.content?.fields
-      out.textContent = `Tatum Sui mainnet: checkpoint ${a.js.result} (${a.ms} ms)\nobligation ${d0[0].obligationId.slice(0, 12)}… version ${b.js.result?.data?.version} (${b.ms} ms)\n  deposits: ${f?.deposits?.length} legs, borrows: ${f?.borrows?.length} legs\n  Suilend-stored weighted borrow $${(Number(BigInt(f.weighted_borrowed_value_usd.fields.value) / 10n ** 12n) / 1e6).toFixed(2)}, unhealthy limit $${(Number(BigInt(f.unhealthy_borrow_value_usd.fields.value) / 10n ** 12n) / 1e6).toFixed(2)} (as of its last refresh)`
+      const t0 = performance.now()
+      const res = await fetch('https://sui-mainnet.gateway.tatum.io/graphql', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ query: 'query($id: SuiAddress!) { checkpoint { sequenceNumber } object(address: $id) { version asMoveObject { contents { json } } } }', variables: { id: d0[0].obligationId } }) })
+      const js = await res.json()
+      if (!res.ok || js.errors?.length) throw new Error(js.errors?.map((e) => e.message).join('; ') || ('HTTP ' + res.status))
+      const f = js.data?.object?.asMoveObject?.contents?.json
+      const ms = Math.round(performance.now() - t0)
+      out.textContent = `Tatum Sui mainnet (GraphQL): checkpoint ${js.data.checkpoint.sequenceNumber} (${ms} ms)\nobligation ${d0[0].obligationId.slice(0, 12)}… version ${js.data.object?.version}\n  deposits: ${f?.deposits?.length} legs, borrows: ${f?.borrows?.length} legs\n  Suilend-stored weighted borrow $${usdOf(f.weighted_borrowed_value_usd)}, unhealthy limit $${usdOf(f.unhealthy_borrow_value_usd)} (as of its last refresh)`
     } catch (e) { out.textContent = 'Tatum call failed: ' + e.message + ' (the anonymous plan allows 5 requests/min)' }
   }
   $('replay').onclick = async () => {

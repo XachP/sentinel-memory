@@ -4,8 +4,8 @@
 **0:00–0:15 · Hook** (dashboard header on screen)
 "Most monitoring agents forget everything between runs. They trust the same broken price feed and raise the same useless alarm every hour. Sentinel Memory guards real Suilend loans on Sui mainnet, and it remembers."
 
-**0:15–0:40 · What it sees: Tatum** (terminal: `bun src/cli.ts run`, then highlight the 3 Tatum calls)
-"Every hour it reads Sui mainnet through Tatum's RPC gateway: the Suilend market, each loan and a Cetus pool, all in one multiGetObjects call. It re-derives each loan the way Suilend's liquidation check does. Then it prices SUI from eight feeds, both on-chain and off-chain."
+**0:15–0:40 · What it sees: Tatum** (terminal: `bun src/cli.ts run`, then highlight the Tatum GraphQL call)
+"Every hour it reads Sui mainnet through Tatum's GraphQL gateway: the Suilend market, each loan and a Cetus pool, all in one query. It re-derives each loan the way Suilend's liquidation check does. Then it prices SUI from eight feeds, both on-chain and off-chain."
 
 **0:40–1:10 · What it remembers: Walrus** (dashboard: "Today: with memory vs empty memory")
 "Before deciding, it recalls its last state snapshot from Walrus Memory. That snapshot holds which feeds to trust, how often each of its own arguments was right, and how many of its alarms were false. Then it decides twice on the same evidence, once with memory and once without. This box shows exactly what memory changed, and the blob it was conditioned on." (click a Walruscan link)

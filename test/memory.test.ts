@@ -70,6 +70,16 @@ describe('A/B scorecard', () => {
 	})
 })
 
+describe('walrus recall does not swallow a failed decrypt', () => {
+	test('listed blobs that come back empty are a failure, not a cold start', async () => {
+		const { requireDecrypted } = await import('../src/memory/walrus')
+		expect(() => requireDecrypted([{ blob_id: 'A' }], [], 'sentinel-memory.state')).toThrow('none decrypted')
+		expect(() => requireDecrypted([{ blob_id: 'NEW' }, { blob_id: 'OLD' }], [{ blob_id: 'OLD', text: 'older snapshot' }], 'sentinel-memory.state')).toThrow('did not decrypt')
+		expect(requireDecrypted([], [], 'sentinel-memory.state')).toEqual([])
+		expect(requireDecrypted([{ blob_id: 'A' }], [{ blob_id: 'A', text: 'ok' }], 'sentinel-memory.state')).toEqual([{ blob_id: 'A', text: 'ok' }])
+	})
+})
+
 describe('walrus manual-mode embedding', () => {
 	test('local feature-hash embedding is deterministic, 1536-d and unit length', async () => {
 		const { hashEmbed, EMBED_DIM } = await import('../src/memory/walrus')

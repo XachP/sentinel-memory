@@ -35,6 +35,20 @@ export function hashEmbed(text: string, dim = EMBED_DIM): number[] {
 
 const hexToBytes = (h: string) => Uint8Array.from(h.replace(/^0x/, '').match(/../g)!.map((b) => parseInt(b, 16)))
 
+/**
+ * MemWalManual.recallManual logs a Walrus download or SEAL decrypt failure and returns no row for it.
+ * An empty result after a non-empty listing is a failure, not a cold start: treating it as empty memory
+ * would let the next run overwrite the chain. `listed` is newest-first.
+ */
+export function requireDecrypted<T extends { blob_id: string; text: string }>(listed: { blob_id: string }[], results: T[], namespace: string): T[] {
+	if (!listed.length) return results
+	const ok = results.filter((r) => r.blob_id && r.text)
+	const newest = listed[0].blob_id
+	if (!ok.length) throw new Error(`walrus listed ${listed.length} ${namespace} blob(s) but none decrypted`)
+	if (!ok.some((r) => r.blob_id === newest)) throw new Error(`walrus newest ${namespace} blob ${newest} did not decrypt`)
+	return ok
+}
+
 export type WriteMode = 'auto' | 'standard' | 'manual'
 
 export class WalrusStore implements MemoryStore {
@@ -91,7 +105,8 @@ export class WalrusStore implements MemoryStore {
 		try {
 			const r = await this.manual.recallManual('pinned', { limit: top.length, namespace })
 			const created = new Map(top.map((m) => [m.blob_id, m.created_at]))
-			return (r.results as { blob_id: string; text: string }[]).map((m) => ({ blobId: m.blob_id, text: m.text, createdAt: created.get(m.blob_id) }))
+			const rows = requireDecrypted(top, (r.results ?? []) as { blob_id: string; text: string }[], namespace)
+			return rows.map((m) => ({ blobId: m.blob_id, text: m.text, createdAt: created.get(m.blob_id) }))
 		} finally {
 			this.pinned = null
 		}

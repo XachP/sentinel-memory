@@ -6,8 +6,11 @@ import type { Leg, Position } from '../core/evidence'
 export const SUILEND_MAIN_MARKET = '0x84030d26d85eaa7035084a057f2f11f701b7e2e4eda87551becbc7c97505ece1'
 const WAD = 10n ** 18n
 
+// JSON-RPC wraps every Move struct as `{type, fields}`. Tatum GraphQL `json` is the fields themselves
+// (a TypeName is the type string, a Decimal is `{value}`). Accept both so the Oct 22 fixtures still parse.
+const moveFields = (x: any): any => (x && typeof x === 'object' && typeof x.type === 'string' && x.fields && typeof x.fields === 'object' ? x.fields : x)
 const dec = (x: any): bigint => BigInt(x?.fields?.value ?? x?.value ?? x ?? 0)
-const coin = (x: any): string => x?.fields?.name ?? x?.name
+const coin = (x: any): string => (typeof x === 'string' ? x : (x?.fields?.name ?? x?.name ?? ''))
 const symbolOf = (t: string) => t.split('::').pop() ?? t
 
 export type Reserve = {
@@ -26,8 +29,8 @@ export type Reserve = {
 
 export function parseReserves(marketFields: any): Reserve[] {
 	return (marketFields.reserves as any[]).map((r, i) => {
-		const f = r.fields
-		const cfg = f.config.fields.element.fields
+		const f = moveFields(r)
+		const cfg = moveFields(moveFields(f.config).element)
 		const available = BigInt(f.available_amount)
 		const borrowed = dec(f.borrowed_amount) / WAD
 		const unclaimed = dec(f.unclaimed_spread_fees) / WAD
@@ -51,14 +54,14 @@ export function parseReserves(marketFields: any): Reserve[] {
 export function parseObligation(obligationId: string, label: string, f: any, reserves: Reserve[]): Position {
 	const byIndex = new Map(reserves.map((r) => [r.index, r]))
 	const deposits: Leg[] = (f.deposits as any[]).map((d) => {
-		const x = d.fields
+		const x = moveFields(d)
 		const r = byIndex.get(Number(x.reserve_array_index))!
 		const ctokens = BigInt(x.deposited_ctoken_amount)
 		const amount = r.ctokenSupply > 0n ? (ctokens * r.totalSupplyRaw) / r.ctokenSupply : 0n
 		return { coinType: r.coinType, symbol: symbolOf(r.coinType), amountRaw: amount.toString(), decimals: r.decimals, oraclePriceMicros: r.priceMicros, oraclePriceTs: r.priceTs, weightBps: r.closeLtvPct * 100, utilizationBps: r.utilizationBps }
 	})
 	const borrows: Leg[] = (f.borrows as any[]).map((b) => {
-		const x = b.fields
+		const x = moveFields(b)
 		const r = byIndex.get(Number(x.reserve_array_index))!
 		const owedWad = dec(x.borrowed_amount)
 		const userRate = dec(x.cumulative_borrow_rate)
